@@ -35,14 +35,64 @@ sensu_handler "metrics" do
   handlers node["monitor"]["metric_handlers"]
 end
 
-check_definitions = case
-when Chef::Config[:solo]
-  data_bag("sensu_checks").map do |item|
-    data_bag_item("sensu_checks", item)
-  end
-else
-  search(:sensu_checks, "*:*")
+handlers_dir = File.join(node['sensu']['directory'], 'handlers')
+
+cookbook_file ::File.join(handlers_dir, 'hipchat.rb') do
+  source 'handlers/notification/hipchat.rb'
 end
+
+sensu_handler 'hipchat' do
+  type 'pipe'
+  command ::File.join(handlers_dir, 'hipchat.rb')
+end
+
+sensu_snippet 'hipchat' do
+  content(
+      :hipchat => {
+          :apikey => node['monitor']['hipchat']['apikey'],
+          :room   => node['monitor']['hipchat']['room'],
+      }
+  )
+end
+
+cookbook_file ::File.join(handlers_dir, 'pagerduty.rb') do
+  source 'handlers/notification/pagerduty.rb'
+end
+
+sensu_handler 'pagerduty' do
+  type 'pipe'
+  command ::File.join(handlers_dir, 'pagerduty.rb')
+  severities ['critical', 'ok']
+end
+
+sensu_snippet 'pagerduty' do
+  content(
+      :pagerduty => {
+          :api_key => node['monitor']['pagerduty']['api_key'],
+      }
+  )
+end
+
+sensu_handler 'graphite' do
+  type 'amqp'
+  additional(
+      :exchange => {
+          :type    => 'topic',
+          :name    => 'metrics',
+          :passive => true,
+      },
+      :mutator  => 'only_check_output'
+  )
+end
+
+check_definitions = case
+                      when Chef::Config[:solo]
+                        data_bag("sensu_checks").map do |item|
+                          data_bag_item("sensu_checks", item)
+                        end
+                      else
+                        search(:sensu_checks, "*:*")
+                    end
 
 check_definitions.each do |check|
   sensu_check check["id"] do
