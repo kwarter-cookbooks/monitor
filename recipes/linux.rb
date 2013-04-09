@@ -36,6 +36,15 @@ monitor_check 'load' do
   subscribers ['base']
 end
 
+monitor_check 'cpu' do
+  file '/system/cpu.rb'
+  command ''
+  handlers ['default']
+  standalone true
+  interval 30
+  subscribers ['base']
+end
+
 %w(cpu-metrics disk-capacity-metrics disk-metrics interface-metrics load-metrics memory-metrics vmstat-metrics).each do |metric|
   monitor_check metric do
     file "/system/#{metric}.rb"
