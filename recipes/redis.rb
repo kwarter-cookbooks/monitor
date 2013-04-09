@@ -17,19 +17,23 @@
 # limitations under the License.
 #
 
-include_recipe "monitor::_redis"
+sensu_gem "redis"
 
-sensu_check "redis_process" do
-  command "check-procs.rb -p redis-server -C 1"
-  handlers ["default"]
+monitor_check 'redis-process' do
+  file '/processes/check-procs.rb'
+  command '-p redis-server -C 1'
+  handlers ['default']
+  subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   standalone true
   interval 30
 end
 
-sensu_check "redis_metrics" do
-  type "metric"
-  command "redis-metrics.rb"
-  handlers ["metrics"]
+monitor_check 'redis-metrics' do
+  file '/redis/redis-graphite.rb'
+  command '--scheme kwarter.:::name:::.redis'
+  type 'metric'
+  handlers ['metrics']
+  subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   standalone true
   interval 30
 end

@@ -17,18 +17,19 @@
 # limitations under the License.
 #
 
-sensu_gem "redphone"
+sensu_gem 'redphone'
 
-cookbook_file "/etc/sensu/handlers/pagerduty.rb" do
-  source "handlers/pagerduty.rb"
+cookbook_file ::File.join(node['sensu']['directory'], 'handlers', 'pagerduty.rb') do
+  source 'handlers/notification/pagerduty.rb'
   mode 0755
 end
 
-sensu_snippet "pagerduty" do
-  content(:api_key => node["monitor"]["pagerduty_api_key"])
+sensu_snippet 'pagerduty' do
+  content(:api_key => node['monitor']['pagerduty_api_key'])
 end
 
-sensu_handler "pagerduty" do
-  type "pipe"
-  command "pagerduty.rb"
+sensu_handler 'pagerduty' do
+  type 'pipe'
+  command 'pagerduty.rb'
+  severities node['monitor']['pagreduty_severities'] unless node['monitor']['pagreduty_severities'].empty?
 end

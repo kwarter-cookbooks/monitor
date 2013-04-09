@@ -17,11 +17,14 @@
 # limitations under the License.
 #
 
-include_recipe "monitor::_rabbitmq"
+sensu_gem "carrot-top"
 
-sensu_check "rabbitmq_overview_metrics" do
-  command "rabbitmq-overview-metrics.rb"
-  handlers ["metrics"]
+monitor_check 'rabbitmq-overview-metrics' do
+  file '/rabbitmq/rabbitmq-overview-metrics.rb'
+  command '--user :::rabbitmq.user::: --password :::rabbitmq.password::: --scheme kwarter.:::name:::.rabbitmq'
+  type 'metric'
+  handlers ['metrics']
+  subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   standalone true
   interval 30
 end

@@ -17,46 +17,50 @@
 # limitations under the License.
 #
 
-graphite_address = node["monitor"]["graphite_address"]
-graphite_port = node["monitor"]["graphite_port"]
+graphite_address = node['monitor']['graphite_address']
+graphite_port = node['monitor']['graphite_port']
 
 case
 when Chef::Config[:solo]
-  graphite_address ||= "localhost"
+  graphite_address ||= 'localhost'
   graphite_port ||= 2003
 when graphite_address.nil?
   graphite_node = case
-  when node["monitor"]["environment_aware_search"]
+  when node['monitor']['environment_aware_search']
     search(:node, "chef_environment:#{node.chef_environment} AND recipes:graphite").first
   else
-    search(:node, "recipes:graphite").first
+    search(:node, 'recipes:graphite').first
   end
 
   graphite_address = case
-  when graphite_node.has_key?("cloud")
-    graphite_node["cloud"][ip_type] || graphite_node["ipaddress"]
+  when graphite_node.has_key?('cloud')
+    graphite_node['cloud'][ip_type] || graphite_node['ipaddress']
   else
-    graphite_node["ipaddress"]
+    graphite_node['ipaddress']
   end
 
-  graphite_port = graphite_node["graphite"]["carbon"]["line_receiver_port"]
+  graphite_port = graphite_node['graphite']['carbon']['line_receiver_port']
 end
 
-sensu_handler "graphite" do
-  type "tcp"
-  socket(
-    :host => graphite_address,
-    :port => graphite_port
-  )
-  mutator "only_check_output"
+if node['graphite_enable_tcp']
+  sensu_handler 'graphite' do
+    type 'tcp'
+    socket(
+      :host => graphite_address,
+      :port => graphite_port
+    )
+    mutator 'only_check_output'
+  end
 end
 
-sensu_handler "graphite_amqp" do
-  type "amqp"
-  exchange(
-    :type => "topic",
-    :name => "graphite",
-    :durable => true
-  )
-  mutator "only_check_output"
+if node['graphite_enable_amqp']
+  sensu_handler 'graphite_amqp' do
+    type 'amqp'
+    exchange(
+      :type => 'topic',
+      :name => node['graphite_amqp_exchange'],
+      :durable => true
+    )
+    mutator 'only_check_output'
+  end
 end

@@ -1,5 +1,6 @@
+sensu_gem 'ohai'
 
-monitor_check 'disk_usage' do
+monitor_check 'disk-usage' do
   file '/system/check-disk.rb'
   command '-w 70 -c 80 -x nfs,tmpfs,fuse -i /'
   handlers ['default']
@@ -33,4 +34,16 @@ monitor_check 'load' do
   standalone true
   interval 30
   subscribers ['base']
+end
+
+%w(cpu-metrics disk-capacity-metrics disk-metrics interface-metrics load-metrics memory-metrics vmstat-metrics).each do |metric|
+  monitor_check metric do
+    file "/system/#{metric}.rb"
+    type 'metric'
+    command '--scheme kwarter.:::name:::'
+    handlers ['metrics']
+    standalone true
+    interval 30
+    subscribers ['base']
+  end
 end
