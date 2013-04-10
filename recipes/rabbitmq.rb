@@ -18,6 +18,16 @@
 #
 
 sensu_gem "carrot-top"
+sensu_gem "rest-client"
+
+monitor_check 'rabbitmq-process' do
+  file '/rabbitmq/rabbitmq-alive.rb'
+  command '--username :::rabbitmq.user::: --password :::rabbitmq.password::: --vhost :::rabbitmq.vhost:::'
+  handlers ['default']
+  subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
+  standalone true
+  interval 30
+end
 
 monitor_check 'rabbitmq-overview-metrics' do
   file '/rabbitmq/rabbitmq-overview-metrics.rb'
@@ -27,4 +37,16 @@ monitor_check 'rabbitmq-overview-metrics' do
   subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   standalone true
   interval 30
+end
+
+if node['monitor']['plugins']['rabbitmq']['monitored_queues']
+  monitor_check 'rabbitmq-queue-metrics' do
+    file '/rabbitmq/rabbitmq-queue-metrics.rb'
+    command "--user :::rabbitmq.user::: --password :::rabbitmq.password::: --filter '#{node['monitor']['plugins']['rabbitmq']['monitored_queues']}' --scheme kwarter.:::name:::.rabbitmq.queues"
+    type 'metric'
+    handlers ['metrics']
+    subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
+    standalone true
+    interval 30
+  end
 end
