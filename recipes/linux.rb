@@ -7,6 +7,9 @@ monitor_check 'disk-usage' do
   standalone true
   interval 30
   subscribers ['base']
+  additional({
+                 :occurrences => 2
+             })
 end
 
 monitor_check 'memory' do
@@ -16,6 +19,9 @@ monitor_check 'memory' do
   standalone true
   interval 30
   subscribers ['base']
+  additional({
+                 :occurrences => 2
+             })
 end
 
 monitor_check 'swap' do
@@ -25,6 +31,9 @@ monitor_check 'swap' do
   standalone true
   interval 30
   subscribers ['base']
+  additional({
+                 :occurrences => 2
+             })
 end
 
 monitor_check 'load' do
@@ -34,6 +43,9 @@ monitor_check 'load' do
   standalone true
   interval 30
   subscribers ['base']
+  additional({
+                 :occurrences => 2
+             })
 end
 
 monitor_check 'cpu' do
@@ -43,6 +55,9 @@ monitor_check 'cpu' do
   standalone true
   interval 30
   subscribers ['base']
+  additional({
+                 :occurrences => 2
+             })
 end
 
 %w(cpu-metrics disk-capacity-metrics disk-metrics interface-metrics load-metrics memory-metrics vmstat-metrics).each do |metric|
@@ -54,5 +69,8 @@ end
     standalone true
     interval 30
     subscribers ['base']
+    additional({
+                   :occurrences => 2
+               })
   end
 end
