@@ -28,7 +28,7 @@ end
 
 monitor_check 'cassandra-metrics' do
   file '/cassandra/cassandra-metrics.rb'
-  command '--cfstats --filter "history|gameresponses|checkins"'
+  command '--cfstats --filter "history|gameresponses|checkins" --scheme kwarter.:::name:::.cassandra'
   type 'metric'
   handlers ['metrics']
   subscribers ['cassandra']
