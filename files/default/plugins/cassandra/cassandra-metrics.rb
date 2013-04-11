@@ -318,7 +318,7 @@ class CassandraMetrics < Sensu::Plugin::Metric::CLI::Graphite
         metric.gsub!(/[_]{2,}/, '_')       # convert sequence of multiple _'s to single _
         metric.downcase!
         # sanitize metric values for graphite. Numbers only, please.
-        value = value.chomp(' ms.').gsub(/([0-9.]+)$/, '\1')
+        value = value.chomp(' ms.').gsub('NaN', '0').gsub(/([0-9.]+)$/, '\1')
       end
       [metric, value]
     end
