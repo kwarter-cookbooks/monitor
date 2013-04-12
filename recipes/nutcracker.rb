@@ -19,7 +19,7 @@
 
 monitor_check 'nutcracker-process' do
   file '/processes/check-procs.rb'
-  command "-p nutcracker"
+  command "-p nutcracker.*nutcracker.conf"
   handlers ['default']
   subscribers ['app']
   standalone true
