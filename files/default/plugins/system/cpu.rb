@@ -78,10 +78,10 @@ class CPU < Sensu::Plugin::Check::CLI
     end
 
     total_cpu = (all[:user] + all[:system] + all[:iowait]) / config[:num_reports]
-    critical("CPU is too high: #{total_cpu} (user: #{all[:user] / config[:num_reports]}, system: #{all[:system] / config[:num_reports]}, iowait: #{all[:iowait] / config[:num_reports]}") if total_cpu > config[:critical]
-    warning("CPU is too high: #{total_cpu} (user: #{all[:user] / config[:num_reports]}, system: #{all[:system] / config[:num_reports]}, iowait: #{all[:iowait] / config[:num_reports]}") if total_cpu > config[:warning]
-    critical("Steal CPU is too high: #{all[:steal]}") if all[:steal] / config[:num_reports] > config[:steal_critical]
-    warning("Steal CPU is too high: #{all[:steal]}") if all[:steal] / config[:num_reports] > config[:steal_warning]
+    critical("CPU is too high: #{total_cpu} (user: #{all[:user] / config[:num_reports]}, system: #{all[:system] / config[:num_reports]}, iowait: #{all[:iowait] / config[:num_reports]})") if total_cpu > config[:critical]
+    warning("CPU is too high: #{total_cpu} (user: #{all[:user] / config[:num_reports]}, system: #{all[:system] / config[:num_reports]}, iowait: #{all[:iowait] / config[:num_reports]})") if total_cpu > config[:warning]
+    critical("Steal CPU is too high: #{all[:steal] / config[:num_reports]}") if all[:steal] / config[:num_reports] > config[:steal_critical]
+    warning("Steal CPU is too high: #{all[:steal] / config[:num_reports]}") if all[:steal] / config[:num_reports] > config[:steal_warning]
     ok
   end
 
