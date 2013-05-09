@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: mongo
+# Recipe:: cassandra
 #
 # Copyright 2013, Kwarter, Inc.
 #
@@ -17,14 +17,23 @@
 # limitations under the License.
 #
 
-monitor_check 'mongodb-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'mongod --config'"
+sensu_gem "haproxy"
+
+monitor_check 'haproxy-check' do
+  file '/haproxy/check-haproxy.rb'
+  command '-s servers-http'
   handlers ['default']
-  subscribers ['mongodb-config', 'mongodb-events', 'mongodb-users']
+  subscribers ['haproxy']
   standalone true
   interval 30
 end
 
-# TODO metrics but we already have MMS
-
+monitor_check 'haproxy-metrics' do
+  file '/haproxy/haproxy-metrics.rb'
+  command '--connect /var/run/haproxy.sock --scheme kwarter.:::name:::.haproxy'
+  type 'metric'
+  handlers ['metrics']
+  subscribers ['haproxy']
+  standalone true
+  interval 30
+end
