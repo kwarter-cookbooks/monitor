@@ -1,6 +1,5 @@
-#
 # Cookbook Name:: monitor
-# Recipe:: cassandra
+# Recipe:: elasticsearch
 #
 # Copyright 2013, Kwarter, Inc.
 #
@@ -15,23 +14,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-monitor_check 'cassandra-process' do
+sensu_gem "rest-client"
+
+monitor_check 'elasticsearch-process' do
   file '/processes/check-procs.rb'
-  command "-p 'jsvc\.exec.*cassandra' -W 2 -C 2 -w 2 -c 2"
+  command "-p 'org.elasticsearch.bootstrap.ElasticSearch' -C 1"
   handlers ['default']
-  subscribers ['cassandra']
+  subscribers ['elasticsearch']
   standalone true
   interval 30
 end
 
-monitor_check 'cassandra-metrics' do
-  file '/cassandra/cassandra-metrics.rb'
-  command '--cfstats --filter "history|gameresponses|checkins" --scheme kwarter.:::name:::.cassandra'
+monitor_check 'elasticsearch-metrics' do
+  file '/elasticsearch/es-node-graphite.rb'
+  command '--scheme kwarter.:::name:::.elasticsearch'
   type 'metric'
   handlers ['metrics']
-  subscribers ['cassandra']
+  subscribers ['elasticsearch']
   standalone true
   interval 30
 end

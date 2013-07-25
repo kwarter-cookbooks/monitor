@@ -19,8 +19,18 @@
 
 monitor_check 'nutcracker-process' do
   file '/processes/check-procs.rb'
-  command "-p nutcracker.*nutcracker.conf"
+  command "-p 'nutcracker.*nutcracker.conf' -C 1"
   handlers ['default']
+  subscribers ['app']
+  standalone true
+  interval 30
+end
+
+monitor_check 'nutcracker-metrics' do
+  file '/nutcracker/nutcracker-metrics.rb'
+  command '--scheme kwarter.:::name:::.nutcracker'
+  type 'metric'
+  handlers ['metrics']
   subscribers ['app']
   standalone true
   interval 30

@@ -19,7 +19,7 @@
 
 monitor_check 'mongodb-process' do
   file '/processes/check-procs.rb'
-  command "-p 'mongod --config'"
+  command "-p 'mongod --config' -C 1"
   handlers ['default']
   subscribers ['mongodb-config', 'mongodb-events', 'mongodb-users']
   standalone true
