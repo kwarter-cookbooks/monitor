@@ -21,7 +21,7 @@ sensu_gem "redis"
 
 monitor_check 'redis-process' do
   file '/processes/check-procs.rb'
-  command '-p redis-server -C 1 -c 2'
+  command '-p redis-server -C 1 -c 2 -w 2'
   handlers ['default']
   subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   standalone true
