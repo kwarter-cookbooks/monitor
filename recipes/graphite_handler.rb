@@ -42,7 +42,7 @@ when graphite_address.nil?
   graphite_port = graphite_node['graphite']['carbon']['line_receiver_port']
 end
 
-if node['graphite_enable_tcp']
+if node['monitor']['graphite_enable_tcp']
   sensu_handler 'graphite' do
     type 'tcp'
     socket(
@@ -53,7 +53,7 @@ if node['graphite_enable_tcp']
   end
 end
 
-if node['graphite_enable_amqp']
+if node['monitor']['graphite_enable_amqp']
   sensu_handler 'graphite_amqp' do
     type 'amqp'
     exchange(
