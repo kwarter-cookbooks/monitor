@@ -58,7 +58,7 @@ if node['monitor']['graphite_enable_amqp']
     type 'amqp'
     exchange(
       :type => 'topic',
-      :name => node['graphite_amqp_exchange'],
+      :name => node['monitor']['graphite_amqp_exchange'],
       :durable => true
     )
     mutator 'only_check_output'
