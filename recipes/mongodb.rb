@@ -22,7 +22,6 @@ monitor_check 'mongodb-process' do
   command "-p 'mongod --config' -C 1"
   handlers ['default']
   subscribers ['mongodb-config', 'mongodb-events', 'mongodb-users']
-  standalone true
   interval 30
 end
 

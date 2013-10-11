@@ -22,7 +22,6 @@ monitor_check 'elasticsearch-process' do
   command "-p 'org.elasticsearch.bootstrap.ElasticSearch' -C 1"
   handlers ['default']
   subscribers ['elasticsearch']
-  standalone true
   interval 30
 end
 
@@ -32,6 +31,5 @@ monitor_check 'elasticsearch-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['elasticsearch']
-  standalone true
   interval 30
 end

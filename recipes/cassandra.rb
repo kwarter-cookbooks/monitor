@@ -22,7 +22,6 @@ monitor_check 'cassandra-process' do
   command "-p 'jsvc\.exec.*cassandra' -W 2 -C 2 -w 2 -c 2"
   handlers ['default']
   subscribers ['cassandra']
-  standalone true
   interval 30
 end
 
@@ -32,6 +31,5 @@ monitor_check 'cassandra-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['cassandra']
-  standalone true
   interval 30
 end

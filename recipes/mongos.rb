@@ -22,7 +22,6 @@ monitor_check 'mongos-process' do
   command '-p mongos'
   handlers ['default']
   subscribers ['app', 'mongodb-mms']
-  standalone true
   interval 30
 end
 

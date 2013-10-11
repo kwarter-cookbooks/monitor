@@ -22,7 +22,6 @@ monitor_check 'nginx-process' do
   command "-f #{node[:nginx][:pid]}"
   handlers ['default']
   subscribers ['nginx']
-  standalone true
   interval 30
 end
 
@@ -32,6 +31,5 @@ monitor_check 'nginx-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['nginx']
-  standalone true
   interval 30
 end

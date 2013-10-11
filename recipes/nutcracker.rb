@@ -22,7 +22,6 @@ monitor_check 'nutcracker-process' do
   command "-p 'nutcracker.*nutcracker.conf' -C 1"
   handlers ['default']
   subscribers ['app']
-  standalone true
   interval 30
 end
 
@@ -32,6 +31,5 @@ monitor_check 'nutcracker-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['app']
-  standalone true
   interval 30
 end

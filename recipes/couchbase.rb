@@ -20,6 +20,5 @@ monitor_check 'couchbase-process' do
   command '--password :::couchbase.password:::'
   handlers ['default']
   subscribers ['couchbase']
-  standalone true
   interval 30
 end

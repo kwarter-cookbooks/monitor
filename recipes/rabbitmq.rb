@@ -25,7 +25,6 @@ monitor_check 'rabbitmq-process' do
   command '--username :::rabbitmq.user::: --password :::rabbitmq.password::: --vhost :::rabbitmq.vhost:::'
   handlers ['default']
   subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
-  standalone true
   interval 30
 end
 
@@ -35,7 +34,6 @@ monitor_check 'rabbitmq-overview-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
-  standalone true
   interval 30
 end
 
@@ -46,7 +44,6 @@ if node['monitor']['plugins']['rabbitmq']['monitored_queues']
     type 'metric'
     handlers ['metrics']
     subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
-    standalone true
     interval 30
   end
 end

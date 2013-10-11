@@ -22,6 +22,5 @@ monitor_check 'statsd-process' do
   command "-p nodejs.*statsd"
   handlers ['default']
   subscribers ['statsd']
-  standalone true
   interval 30
 end

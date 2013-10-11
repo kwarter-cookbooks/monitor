@@ -24,7 +24,6 @@ monitor_check 'haproxy-check' do
   command '-s servers-http'
   handlers ['default']
   subscribers ['haproxy']
-  standalone true
   interval 30
 end
 
@@ -34,6 +33,5 @@ monitor_check 'haproxy-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['haproxy']
-  standalone true
   interval 30
 end

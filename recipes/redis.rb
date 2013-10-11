@@ -24,7 +24,6 @@ monitor_check 'redis-process' do
   command '-p redis-server -C 1 -c 2 -w 2'
   handlers ['default']
   subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
-  standalone true
   interval 30
 end
 
@@ -34,6 +33,5 @@ monitor_check 'redis-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
-  standalone true
   interval 30
 end
