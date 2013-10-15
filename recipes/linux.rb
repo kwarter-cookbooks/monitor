@@ -2,7 +2,7 @@ sensu_gem 'ohai'
 
 monitor_check 'disk-usage' do
   file '/system/check-disk.rb'
-  command '-w 70 -c 80 -x nfs,tmpfs,fuse'
+  command '-w 80 -c 90 -x nfs,tmpfs,fuse'
   handlers ['default']
   interval 30
   subscribers ['base']
@@ -13,7 +13,7 @@ end
 
 monitor_check 'memory' do
   file '/system/check-mem.rb'
-  command '-w 30 -c 25'
+  command '-w 15 -c 10'
   handlers ['default']
   interval 30
   subscribers ['base']

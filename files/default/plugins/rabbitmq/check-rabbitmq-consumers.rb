@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 #
-# Check RabbitMQ messages
+# Check RabbitMQ Consumer Count
 # ===
 #
-# Copyright 2012 Evan Hazlett <ejhazlett@gmail.com>
+# Copyright 2013 Tony Chong <tony.chong@kwarter.com>
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
@@ -13,7 +13,7 @@ require 'sensu-plugin/check/cli'
 require 'socket'
 require 'carrot-top'
 
-class CheckRabbitMQMessages < Sensu::Plugin::Check::CLI
+class CheckRabbitMQConsumers < Sensu::Plugin::Check::CLI
 
   option :host,
     :description => "RabbitMQ management API host",
@@ -39,14 +39,16 @@ class CheckRabbitMQMessages < Sensu::Plugin::Check::CLI
   option :warn,
     :short => '-w NUM_MESSAGES',
     :long => '--warn NUM_MESSAGES',
-    :description => 'WARNING message count threshold',
-    :default => 250
+    :description => 'WARNING consumer count threshold',
+    :default => 50
 
   option :critical,
     :short => '-c NUM_MESSAGES',
     :long => '--critical NUM_MESSAGES',
-    :description => 'CRITICAL message count threshold',
-    :default => 500
+    :description => 'CRITICAL consumer count threshold',
+    :default => 1
+
+
 
   def get_rabbitmq_info
     begin
@@ -65,10 +67,10 @@ class CheckRabbitMQMessages < Sensu::Plugin::Check::CLI
   def run
     rabbitmq = get_rabbitmq_info
     overview = rabbitmq.overview
-    total = overview['queue_totals']['messages']
-    message "#{total}"
-    critical if total > config[:critical].to_i
-    warning if total > config[:warn].to_i
+    consumers = overview['object_totals']['consumers']
+    message "#{consumers}"
+    critical if consumers < config[:critical].to_i
+    warning if consumers < config[:warn].to_i
     ok
   end
 

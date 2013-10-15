@@ -13,7 +13,7 @@ require 'sensu-plugin/check/cli'
 require 'socket'
 require 'carrot-top'
 
-class CheckRabbitMQMessages < Sensu::Plugin::Check::CLI
+class CheckRabbitMQPublisRate < Sensu::Plugin::Check::CLI
 
   option :host,
     :description => "RabbitMQ management API host",
@@ -65,7 +65,7 @@ class CheckRabbitMQMessages < Sensu::Plugin::Check::CLI
   def run
     rabbitmq = get_rabbitmq_info
     overview = rabbitmq.overview
-    total = overview['queue_totals']['messages']
+    publish_rate = overview['message_stats']['publish_details']
     message "#{total}"
     critical if total > config[:critical].to_i
     warning if total > config[:warn].to_i

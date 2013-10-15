@@ -29,7 +29,7 @@ end
 
 monitor_check 'haproxy-metrics' do
   file '/haproxy/haproxy-metrics.rb'
-  command '--connect /var/run/haproxy.sock --scheme kwarter.:::name:::.haproxy'
+  command '--connect localhost --port 22002 --scheme kwarter.:::name:::.haproxy'
   type 'metric'
   handlers ['metrics']
   subscribers ['haproxy']
