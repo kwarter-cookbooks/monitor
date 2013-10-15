@@ -44,16 +44,30 @@ monitor_check 'load' do
              })
 end
 
-monitor_check 'cpu' do
-  file '/system/check-cpu.rb'
-  command '-w 80 -c 95'
-  handlers ['default']
-  interval 30
-  subscribers ['base']
-  additional({
-                 :occurrences => 2
-             })
-end
+# this seems way too sensitive, rely on load even if it seems weird. We also have newrelic
+#monitor_check 'cpu' do
+#  file '/system/cpu.rb'
+#  command ''
+#  handlers ['default']
+#  standalone true
+#  interval 30
+#  subscribers ['base']
+#  additional({
+#                 :occurrences => 2
+#             })
+#end
+
+# This is a 2nd attempt to add a proper cpu check but it failed. 
+#monitor_check 'cpu' do
+#  file '/system/check-cpu.rb'
+#  command '-w 80 -c 95'
+#  handlers ['default']
+#  interval 30
+#  subscribers ['base']
+#  additional({
+#                 :occurrences => 3
+#             })
+#end
 
 %w(cpu-metrics disk-capacity-metrics disk-metrics interface-metrics load-metrics memory-metrics vmstat-metrics).each do |metric|
   monitor_check metric do

@@ -39,4 +39,8 @@ sensu_gem "sensu-plugin" do
   version node["monitor"]["sensu_plugin_version"]
 end
 
+file "/opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/sensu-plugin-#{node[:monitor][:sensu_plugin_version]}/lib/sensu-plugin/cli.rb" do
+  mode "0755"
+end
+
 include_recipe "sensu::client_service"
