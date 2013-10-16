@@ -51,17 +51,15 @@ end
 monitor_check 'rabbitmq-messages' do
   file '/rabbitmq/check-rabbitmq-messages.rb'
   command '--user :::rabbitmq.user::: --password :::rabbitmq.password::: -w 1000000 -c 2000000'
-  type 'metric'
   handlers ['default']
-  subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
+  subscribers ['rabbitmq'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   interval 30
 end
 
 monitor_check 'rabbitmq-consumers' do
   file '/rabbitmq/check-rabbitmq-consumers.rb'
   command '--user :::rabbitmq.user::: --password :::rabbitmq.password:::'
-  type 'metric'
   handlers ['default']
-  subscribers ['rabbitmq', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
+  subscribers ['rabbitmq'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
   interval 30
 end
