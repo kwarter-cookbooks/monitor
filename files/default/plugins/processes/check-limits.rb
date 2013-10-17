@@ -146,7 +146,7 @@ class CheckLimit < Sensu::Plugin::Check::CLI
       metrics << 'Max processes'
     end
 
-    limit_file = File.read("/proc/#{config[:file_pid]}/limits/")
+    limit_file = File.readlines("/proc/#{config[:file_pid]}/limits")
     metrics.each do |metric|
       status, msg = check_metric(limit_file, metric)
       if status > max_status

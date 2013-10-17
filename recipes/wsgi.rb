@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: nutcracker
+# Recipe:: wsgi
 #
 # Copyright 2013, Kwarter, Inc.
 #
@@ -17,27 +17,10 @@
 # limitations under the License.
 #
 
-monitor_check 'nutcracker-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'nutcracker.*nutcracker.conf' -C 1"
-  handlers ['default']
-  subscribers ['app']
-  interval 30
-end
-
-monitor_check 'nutcracker-metrics' do
-  file '/nutcracker/nutcracker-metrics.rb'
-  command '--scheme kwarter.:::name:::.nutcracker'
-  type 'metric'
-  handlers ['metrics']
-  subscribers ['app']
-  interval 30
-end
-
-monitor_check 'nutcracker-limits' do
+monitor_check 'wsgi-limits' do
   file '/processes/check-limits.rb'
-  command '-p /var/run/nutcracker/nutcracker.pid -f -W 10000 -C 1025'
+  command '-p /srv/www/app.kwarter.com/shared/app.pid -f -W 10000 -C 1025'
   handlers ['default']
-  subscribers ['app']
+  subscribers ['app-api']
   interval 30
 end
