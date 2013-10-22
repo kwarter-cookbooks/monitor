@@ -22,3 +22,11 @@ monitor_check 'couchbase-process' do
   subscribers ['couchbase']
   interval 30
 end
+
+monitor_check 'couchbase-limits' do
+  file '/processes/check-limits.rb'
+  command '-p /opt/couchbase/var/lib/couchbase/couchbase-server.pid -f -W 10000 -C 1025'
+  handlers ['default']
+  subscribers ['couchbase']
+  interval 30
+end

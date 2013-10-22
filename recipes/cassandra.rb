@@ -33,3 +33,11 @@ monitor_check 'cassandra-metrics' do
   subscribers ['cassandra']
   interval 30
 end
+
+monitor_check 'cassandra-limits' do
+  file '/processes/check-limits.rb'
+  command "-p /var/run/cassandra.pid -f -W 10000 -C 1025"
+  handlers ['default']
+  subscribers ['cassandra']
+  interval 30
+end

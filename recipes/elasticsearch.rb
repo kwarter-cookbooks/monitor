@@ -33,3 +33,16 @@ monitor_check 'elasticsearch-metrics' do
   subscribers ['elasticsearch']
   interval 30
 end
+
+pidfile = "replace_me_with_pidfile"
+if node[:elasticsearch]
+  pidfile = node[:elasticsearch][:pid_file]
+end
+
+monitor_check 'elasticsearch-limits' do
+  file '/processes/check-limits.rb'
+  command "-p %s -f -W 10000 -C 1025" % pidfile
+  handlers ['default']
+  subscribers ['elasticsearch']
+  interval 30
+end

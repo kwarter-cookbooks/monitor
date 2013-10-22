@@ -33,3 +33,15 @@ monitor_check 'nginx-metrics' do
   subscribers ['nginx']
   interval 30
 end
+
+pidfile = "replace_me_with_pidfile"
+if node[:nginx]
+  pidfile = node[:nginx][:pid]
+end
+monitor_check 'nginx-limits' do
+  file '/processes/check-limits.rb'
+  command "-p %s -f -W 10000 -C 1025" % pidfile
+  handlers ['default']
+  subscribers ['nginx']
+  interval 30
+end
