@@ -30,3 +30,12 @@ monitor_check 'couchbase-limits' do
   subscribers ['couchbase']
   interval 30
 end
+
+monitor_check 'couchbase-metrics' do
+  file '/couchbase/couchbase_sensu.py'
+  command ""
+  type 'metric'
+  handlers ['metrics']
+  subscribers ['couchbase']
+  interval 30
+end
