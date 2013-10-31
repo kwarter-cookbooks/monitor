@@ -21,9 +21,19 @@ monitor_check 'mongodb-process' do
   file '/processes/check-procs.rb'
   command "-p 'mongod --config' -C 1"
   handlers ['default']
-  subscribers ['mongodb-config', 'mongodb-events', 'mongodb-users']
+  subscribers ['mongodb-events']
   interval 30
 end
 
-# TODO metrics but we already have MMS
-
+# this is not adapted for mongos or shard but we don't use them
+pidfile = "replace_me_with_pidfile"
+if node[:mongodb][:pidpath]
+  pidfile = File.join(node[:mongodb][:pidpath], "mongodb.pid")
+end
+monitor_check 'mongodb-limits' do
+  file '/processes/check-limits.rb'
+  command "-p %s -f -W 10000 -C 1025" % pidfile
+  handlers ['default']
+  subscribers ['mongodb-events']
+  interval 30
+end
