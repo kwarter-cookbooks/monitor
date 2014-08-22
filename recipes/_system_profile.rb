@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _system_profile
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,10 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
+include_recipe "monitor::_extensions"
 
-include_recipe "monitor::_worker"
-
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
-
-include_recipe "monitor::default"
+cookbook_file File.join(node["monitor"]["client_extension_dir"], "system_profile.rb") do
+  source "extensions/system_profile.rb"
+  mode 0755
+  notifies :create, "ruby_block[sensu_service_trigger]", :immediately
+end

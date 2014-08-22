@@ -35,12 +35,31 @@ sensu_client node.name do
   additional client_attributes
 end
 
-sensu_gem "sensu-plugin" do
-  version node["monitor"]["sensu_plugin_version"]
+%w[
+  check-procs.rb
+  check-banner.rb
+  check-http.rb
+  check-log.rb
+  check-mtime.rb
+  check-tail.rb
+  check-fs-writable.rb
+].each do |default_plugin|
+  cookbook_file "/etc/sensu/plugins/#{default_plugin}" do
+    source "plugins/#{default_plugin}"
+    mode 0755
+  end
 end
 
-file "/opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/sensu-plugin-#{node[:monitor][:sensu_plugin_version]}/lib/sensu-plugin/cli.rb" do
-  mode "0755"
+if node["monitor"]["use_nagios_plugins"]
+  include_recipe "monitor::_nagios_plugins"
+end
+
+if node["monitor"]["use_system_profile"]
+  include_recipe "monitor::_system_profile"
+end
+
+if node["monitor"]["use_statsd_input"]
+  include_recipe "monitor::_statsd"
 end
 
 include_recipe "sensu::client_service"

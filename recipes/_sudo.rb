@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _sudo
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
+include_recipe "sudo"
 
-include_recipe "monitor::_worker"
-
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
-
-include_recipe "monitor::default"
+sudo "sensu" do
+  user "sensu"
+  runas "root"
+  commands node["monitor"]["sudo_commands"]
+  host "ALL"
+  nopasswd true
+end

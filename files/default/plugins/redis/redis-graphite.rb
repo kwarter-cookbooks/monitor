@@ -23,10 +23,10 @@ class Redis2Graphite < Sensu::Plugin::Metric::CLI::Graphite
                      'rdb_last_bgsave_status', 'aof_last_bgrewrite_status']
 
   option :host,
-         :short       => "-h HOST",
-         :long        => "--host HOST",
-         :description => "Redis Host to connect to",
-         :default     => '127.0.0.1'
+    :short => "-h HOST",
+    :long => "--host HOST",
+    :description => "Redis Host to connect to",
+    :default  => '127.0.0.1'
 
   option :port,
          :short       => "-p PORT",

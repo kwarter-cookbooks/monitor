@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: graphite_handler
+# Recipe:: _graphite_handler
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -19,6 +19,8 @@
 
 graphite_address = node['monitor']['graphite_address']
 graphite_port = node['monitor']['graphite_port']
+
+ip_type = node["monitor"]["use_local_ipv4"] ? "local_ipv4" : "public_ipv4"
 
 case
 when Chef::Config[:solo]
@@ -62,5 +64,18 @@ if node['monitor']['graphite_enable_amqp']
       :durable => true
     )
     mutator 'only_check_output'
+  end
+end
+
+if node["monitor"]["use_nagios_plugins"]
+  include_recipe "monitor::_nagios_perfdata"
+
+  sensu_handler "graphite_perfdata" do
+    type "tcp"
+    socket(
+      :host => graphite_address,
+      :port => graphite_port
+    )
+    mutator "nagios_perfdata"
   end
 end

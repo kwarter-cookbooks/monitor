@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _extensions
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,31 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
+%w[
+  client
+  server
+].each do |service|
+  extension_dir = node["monitor"]["#{service}_extension_dir"]
 
-include_recipe "monitor::_worker"
+  directory extension_dir do
+    recursive true
+    owner "root"
+    group "sensu"
+    mode 0750
+  end
 
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
+  config_path = case node.platform_family
+  when "rhel", "fedora"
+    "/etc/sysconfig/sensu-#{service}"
+  else
+    "/etc/default/sensu-#{service}"
+  end
 
-include_recipe "monitor::default"
+  file config_path do
+    owner "root"
+    group "root"
+    mode 0744
+    content "EXTENSION_DIR=#{extension_dir}"
+    notifies :create, "ruby_block[sensu_service_trigger]", :immediately
+  end
+end

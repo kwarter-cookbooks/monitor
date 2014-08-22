@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _haproxy
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,18 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
-
-include_recipe "monitor::_worker"
-
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
-
 include_recipe "monitor::default"
+
+sensu_gem "haproxy"
+
+plugin_path = "/etc/sensu/plugins/check-haproxy.rb"
+
+cookbook_file plugin_path do
+  source "plugins/check-haproxy.rb"
+  mode 0755
+end
+
+node.override["monitor"]["sudo_commands"] =
+  node["monitor"]["sudo_commands"] + [plugin_path]
+
+include_recipe "monitor::_sudo"

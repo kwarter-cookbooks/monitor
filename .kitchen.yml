@@ -1,36 +1,63 @@
 ---
 driver_plugin: vagrant
+driver_config:
+  require_chef_omnibus: true
+
 platforms:
-- name: ubuntu-12.04
+- name: ubuntu-13.04
   driver_config:
-    box: opscode-ubuntu-12.04
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-ubuntu-12.04.box
+    box: opscode-ubuntu-13.04
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-13.04_provisionerless.box
+    customize:
+      memory: 1024
+    network:
+      - ["forwarded_port", {guest: 80, host: 8080}]
+      - ["forwarded_port", {guest: 8080, host: 8081}]
   run_list:
   - recipe[apt]
-- name: ubuntu-10.04
+
+- name: centos-6.4
   driver_config:
-    box: opscode-ubuntu-10.04
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-ubuntu-10.04.box
+    box: opscode-centos-6.4
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
+    customize:
+      memory: 1024
+    network:
+      - ["forwarded_port", {guest: 80, host: 8080}]
+      - ["forwarded_port", {guest: 8080, host: 8081}]
   run_list:
-  - recipe[apt]
-- name: centos-6.3
-  driver_config:
-    box: opscode-centos-6.3
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-centos-6.3.box
-  run_list:
-  - recipe[yum::epel]
-- name: centos-5.8
-  driver_config:
-    box: opscode-centos-5.8
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-centos-5.8.box
-  run_list:
-  - recipe[yum::epel]
+  - recipe[yum]
+
 suites:
 - name: default
   run_list:
-  - "recipe[monitor::master]"
-  - "recipe[monitor::graphite_handler]"
-  - "recipe[monitor::pagerduty_handler]"
-  - "recipe[monitor::redis]"
-  - "recipe[monitor::rabbitmq]"
-  attributes: {}
+    - recipe[haproxy]
+    - recipe[graphite]
+    - recipe[monitor::master]
+    - recipe[monitor::haproxy]
+    - recipe[monitor::redis]
+    - recipe[monitor::rabbitmq]
+  attributes:
+    authorization:
+      sudo:
+        users: ["vagrant", "kitchen"]
+        passwordless: true
+        include_sudoers_d: true
+    haproxy:
+      enable_stats_socket: true
+    apache:
+      listen_ports: [8080]
+    graphite:
+      listen_port: 8080
+      carbon:
+        service_type: "init"
+    sensu:
+      dashboard:
+        port: 4000
+    monitor:
+      use_nagios_plugins: true
+      use_system_profile: true
+      use_statsd_input: true
+      metric_handlers: ["graphite"]
+      additional_client_attributes:
+        haproxy_services: "servers-http"

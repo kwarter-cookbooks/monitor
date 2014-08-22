@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _pagerduty_handler
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,22 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
+sensu_gem 'redphone'
 
-include_recipe "monitor::_worker"
+cookbook_file ::File.join(node['sensu']['directory'], 'handlers', 'pagerduty.rb') do
+  source 'handlers/notification/pagerduty.rb'
+  mode 0755
+end
 
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
+sensu_snippet 'pagerduty' do
+  content(:api_key => node['monitor']['pagerduty_api_key'])
+end
 
-include_recipe "monitor::default"
+include_recipe "monitor::_filters"
+
+sensu_handler 'pagerduty' do
+  type 'pipe'
+  command 'pagerduty.rb'
+  filters ["actions"]
+  severities node['monitor']['pagreduty_severities'] unless node['monitor']['pagreduty_severities'].empty?
+end

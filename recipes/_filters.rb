@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: master
+# Recipe:: _filters
 #
 # Copyright 2013, Sean Porter Consulting
 #
@@ -17,12 +17,14 @@
 # limitations under the License.
 #
 
-include_recipe "sensu::rabbitmq"
-include_recipe "sensu::redis"
+sensu_filter "actions" do
+  attributes(:action => "eval: %w[create resolve].include? value.to_s")
+end
 
-include_recipe "monitor::_worker"
-
-include_recipe "sensu::api_service"
-include_recipe "uchiwa"
-
-include_recipe "monitor::default"
+sensu_filter "keepalives" do
+  attributes(
+    :check => {
+      :name => "keepalive"
+    }
+  )
+end

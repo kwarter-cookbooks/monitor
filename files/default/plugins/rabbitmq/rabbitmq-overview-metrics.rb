@@ -99,12 +99,12 @@ class RabbitMQMetrics < Sensu::Plugin::Metric::CLI::Graphite
     output "#{config[:scheme]}.queue_totals.messages_ready.rate", overview['queue_totals']['messages_ready_details']['rate'], timestamp
 
     # overview['message_stats']['publish']
-    if overview['message_stats'].include?('publish') then 
+    if overview['message_stats'].include?('publish') then
       output "#{config[:scheme]}.message_stats.publish.count", overview['message_stats']['publish'], timestamp
     end
-    if overview['message_stats'].include?('publish_details') and 
+    if overview['message_stats'].include?('publish_details') and
        overview['message_stats']['publish_details'].include?('rate') then
-      output "#{config[:scheme]}.message_stats.publish.rate", overview['message_stats']['publish_details']['rate'], timestamp 
+      output "#{config[:scheme]}.message_stats.publish.rate", overview['message_stats']['publish_details']['rate'], timestamp
     end
 
     # overview['message_stats']['deliver_no_ack']
@@ -123,7 +123,7 @@ class RabbitMQMetrics < Sensu::Plugin::Metric::CLI::Graphite
     if overview['message_stats'].include?('deliver_get_details') and
        overview['message_stats']['deliver_get_details'].include?('rate') then
       output "#{config[:scheme]}.message_stats.deliver_get.rate", overview['message_stats']['deliver_get_details']['rate'], timestamp
-    end 
+    end
 
     ok
   end

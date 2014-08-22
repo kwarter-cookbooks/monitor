@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: monitor
-# Recipe:: cassandra
+# Recipe:: haproxy
 #
-# Copyright 2013, Kwarter, Inc.
+# Copyright 2013, Sean Porter Consulting
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,15 +17,7 @@
 # limitations under the License.
 #
 
-sensu_gem "haproxy"
-
-monitor_check 'haproxy-check' do
-  file '/haproxy/check-haproxy.rb'
-  command '-s servers-http'
-  handlers ['default']
-  subscribers ['haproxy']
-  interval 30
-end
+include_recipe "monitor::_haproxy"
 
 monitor_check 'haproxy-metrics' do
   file '/haproxy/haproxy-metrics.rb'
@@ -33,5 +25,11 @@ monitor_check 'haproxy-metrics' do
   type 'metric'
   handlers ['metrics']
   subscribers ['haproxy']
+end
+
+sensu_check "haproxy_services" do
+  command "sudo check-haproxy.rb -s :::haproxy_services::: -w :::haproxy_warning|75::: -c :::haproxy_critical|50:::"
+  handlers ["default"]
+  standalone true
   interval 30
 end

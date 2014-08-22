@@ -9,7 +9,7 @@
 }
 
 @test "rabbitmq should be listening for connections" {
-  [ "$(netstat -plant | grep beam.smp)" ]
+  [ "$(netstat -plant | grep beam)" ]
 }
 
 @test "should have redis-server running" {
@@ -38,12 +38,4 @@
 
 @test "should have a ssh check definition" {
   [ -e "/etc/sensu/conf.d/checks/ssh.json" ]
-}
-
-@test "should have a graphite handler definition" {
-  [ -e "/etc/sensu/conf.d/handlers/graphite.json" ]
-}
-
-@test "should have a pagerduty configuration snippet" {
-  [ -e "/etc/sensu/conf.d/pagerduty.json" ]
 }
