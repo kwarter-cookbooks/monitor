@@ -22,7 +22,7 @@ sensu_gem "rest-client"
 
 sensu_check "rabbitmq_overview_metrics" do
   type "metric"
-  command "rabbitmq-overview-metrics.rb"
+  command "rabbitmq-overview-metrics.rb --user :::rabbitmq.user::: --password :::rabbitmq.password::: --scheme kwarter.:::name:::.rabbitmq"
   handlers ["metrics"]
   standalone true
   interval 30

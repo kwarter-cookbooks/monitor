@@ -26,11 +26,10 @@ sensu_check "redis_process" do
   interval 30
 end
 
-monitor_check 'redis-metrics' do
-  file '/redis/redis-graphite.rb'
-  command '--scheme kwarter.:::name:::.redis'
-  type 'metric'
-  handlers ['metrics']
-  subscribers ['redis', 'sensu'] # because sensu installs it's own redis, not through a redis role. The master should have the role 'sensu'
+sensu_check "redis_metrics" do
+  type "metric"
+  command "redis-metrics.rb"
+  handlers ["metrics"]
+  standalone true
   interval 30
 end
