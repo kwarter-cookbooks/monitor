@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-monitor_check 'mongodb-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'mongod --config' -C 1"
+sensu_check 'mongodb-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -p 'mongod --config' -C 1"
   handlers ['default']
   subscribers ['mongodb-events']
   interval 30
@@ -30,9 +30,10 @@ pidfile = "replace_me_with_pidfile"
 if node[:mongodb][:pidpath]
   pidfile = File.join(node[:mongodb][:pidpath], "mongodb.pid")
 end
-monitor_check 'mongodb-limits' do
-  file '/processes/check-limits.rb'
-  command "-p %s -f -W 10000 -C 1025" % pidfile
+
+sensu_check 'mongodb-limits' do
+  #file '/processes/check-limits.rb'
+  command "check-limits.rb -p %s -f -W 10000 -C 1025" % pidfile
   handlers ['default']
   subscribers ['mongodb-events']
   interval 30

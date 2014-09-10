@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-monitor_check 'nginx-process' do
-  file '/processes/check-procs.rb'
-  command "-f #{node[:nginx][:pid]}"
+sensu_check 'nginx-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -f #{node[:nginx][:pid]}"
   handlers ['default']
   subscribers ['nginx']
   interval 30
 end
 
-monitor_check 'nginx-metrics' do
-  file '/nginx/nginx-metrics.rb'
-  command '--url http://localhost:8090/nginx_status --scheme kwarter.:::name:::.nginx'
+sensu_check 'nginx-metrics' do
+  #file '/nginx/nginx-metrics.rb'
+  command 'nginx-metrics.rb --url http://localhost:8090/nginx_status --scheme kwarter.:::name:::.nginx'
   type 'metric'
   handlers ['metrics']
   subscribers ['nginx']
@@ -38,9 +38,10 @@ pidfile = "replace_me_with_pidfile"
 if node[:nginx]
   pidfile = node[:nginx][:pid]
 end
-monitor_check 'nginx-limits' do
-  file '/processes/check-limits.rb'
-  command "-p %s -f -W 10000 -C 1025" % pidfile
+
+sensu_check 'nginx-limits' do
+  #file '/processes/check-limits.rb'
+  command "check-limits.rb -p %s -f -W 10000 -C 1025" % pidfile
   handlers ['default']
   subscribers ['nginx']
   interval 30

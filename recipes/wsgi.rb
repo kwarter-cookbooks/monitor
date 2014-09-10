@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-monitor_check 'wsgi-limits' do
-  file '/processes/check-limits.rb'
-  command '-p /srv/www/app.kwarter.com/shared/app.pid -f -W 10000 -C 1025'
+sensu_check 'wsgi-limits' do
+  #file '/processes/check-limits.rb'
+  command 'check-limits.rb -p /srv/www/app.kwarter.com/shared/app.pid -f -W 10000 -C 1025'
   handlers ['default']
   subscribers ['app-api']
   interval 30

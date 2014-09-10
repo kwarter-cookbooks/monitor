@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-monitor_check 'statsd-process' do
-  file '/processes/check-procs.rb'
-  command "-p nodejs.*statsd"
+sensu_check 'statsd-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -p nodejs.*statsd"
   handlers ['default']
   subscribers ['statsd']
   interval 30

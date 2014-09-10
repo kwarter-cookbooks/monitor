@@ -17,26 +17,26 @@
 # limitations under the License.
 #
 
-monitor_check 'nutcracker-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'nutcracker.*nutcracker.conf' -C 1"
+sensu_check 'nutcracker-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -p 'nutcracker.*nutcracker.conf' -C 1"
   handlers ['default']
   subscribers ['app']
   interval 30
 end
 
-monitor_check 'nutcracker-metrics' do
-  file '/nutcracker/nutcracker-metrics.rb'
-  command '--scheme kwarter.:::name:::.nutcracker'
+sensu_check 'nutcracker-metrics' do
+  #file '/nutcracker/nutcracker-metrics.rb'
+  command 'nutcracker-metrics.rb --scheme kwarter.:::name:::.nutcracker'
   type 'metric'
   handlers ['metrics']
   subscribers ['app']
   interval 30
 end
 
-monitor_check 'nutcracker-limits' do
-  file '/processes/check-limits.rb'
-  command '-p /var/run/nutcracker/nutcracker.pid -f -W 10000 -C 1025'
+sensu_check 'nutcracker-limits' do
+  #file '/processes/check-limits.rb'
+  command 'check-limits.rb -p /var/run/nutcracker/nutcracker.pid -f -W 10000 -C 1025'
   handlers ['default']
   subscribers ['app']
   interval 30

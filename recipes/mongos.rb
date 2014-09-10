@@ -17,13 +17,12 @@
 # limitations under the License.
 #
 
-monitor_check 'mongos-process' do
-  file '/processes/check-procs.rb'
-  command '-p mongos'
+sensu_check 'mongos-process' do
+  #file '/processes/check-procs.rb'
+  command 'check-procs.rb -p mongos'
   handlers ['default']
   subscribers ['app', 'mongodb-mms']
   interval 30
 end
 
 # TODO metrics but we already have MMS
-

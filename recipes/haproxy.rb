@@ -19,9 +19,9 @@
 
 include_recipe "monitor::_haproxy"
 
-monitor_check 'haproxy-metrics' do
-  file '/haproxy/haproxy-metrics.rb'
-  command '--connect localhost --port 22002 --scheme kwarter.:::name:::.haproxy'
+sensu_check 'haproxy-metrics' do
+  #file '/haproxy/haproxy-metrics.rb'
+  command 'haproxy-metrics.rb --connect localhost --port 22002 --scheme kwarter.:::name:::.haproxy'
   type 'metric'
   handlers ['metrics']
   subscribers ['haproxy']

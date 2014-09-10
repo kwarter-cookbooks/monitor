@@ -15,25 +15,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-monitor_check 'couchbase-process' do
-  file '/couchbase/check-couchbase.rb'
-  command '--password :::couchbase.password:::'
+sensu_check 'couchbase-process' do
+  #file '/couchbase/check-couchbase.rb'
+  command 'check-couchbase.rb --password :::couchbase.password:::'
   handlers ['default']
   subscribers ['couchbase']
   interval 30
 end
 
-monitor_check 'couchbase-limits' do
-  file '/processes/check-limits.rb'
-  command '-p /opt/couchbase/var/lib/couchbase/couchbase-server.pid -f -W 10000 -C 1025'
+sensu_check 'couchbase-limits' do
+  #file '/processes/check-limits.rb'
+  command 'check-limits.rb -p /opt/couchbase/var/lib/couchbase/couchbase-server.pid -f -W 10000 -C 1025'
   handlers ['default']
   subscribers ['couchbase']
   interval 30
 end
 
-monitor_check 'couchbase-metrics' do
-  file '/couchbase/couchbase_sensu.py'
-  command ""
+sensu_check 'couchbase-metrics' do
+  #file '/couchbase/couchbase_sensu.py'
+  command "couchbase_sensu.py"
   type 'metric'
   handlers ['metrics']
   subscribers ['couchbase']

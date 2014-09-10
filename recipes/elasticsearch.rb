@@ -17,17 +17,17 @@
 
 sensu_gem "rest-client"
 
-monitor_check 'elasticsearch-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'org.elasticsearch.bootstrap.ElasticSearch' -C 1"
+sensu_check 'elasticsearch-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -p 'org.elasticsearch.bootstrap.ElasticSearch' -C 1"
   handlers ['default']
   subscribers ['elasticsearch']
   interval 30
 end
 
-monitor_check 'elasticsearch-metrics' do
-  file '/elasticsearch/es-node-graphite.rb'
-  command '--scheme kwarter.:::name:::.elasticsearch'
+sensu_check 'elasticsearch-metrics' do
+  #file '/elasticsearch/es-node-graphite.rb'
+  command 'es-node-graphite.rb --scheme kwarter.:::name:::.elasticsearch'
   type 'metric'
   handlers ['metrics']
   subscribers ['elasticsearch']
@@ -39,9 +39,9 @@ if node[:elasticsearch]
   pidfile = node[:elasticsearch][:pid_file]
 end
 
-monitor_check 'elasticsearch-limits' do
-  file '/processes/check-limits.rb'
-  command "-p %s -f -W 10000 -C 1025" % pidfile
+sensu_check 'elasticsearch-limits' do
+  #file '/processes/check-limits.rb'
+  command "check-limits.rb -p %s -f -W 10000 -C 1025" % pidfile
   handlers ['default']
   subscribers ['elasticsearch']
   interval 30

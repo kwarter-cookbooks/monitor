@@ -17,26 +17,26 @@
 # limitations under the License.
 #
 
-monitor_check 'cassandra-process' do
-  file '/processes/check-procs.rb'
-  command "-p 'jsvc\.exec.*cassandra' -W 2 -C 2 -w 2 -c 2"
+sensu_check 'cassandra-process' do
+  #file '/processes/check-procs.rb'
+  command "check-procs.rb -p 'jsvc\.exec.*cassandra' -W 2 -C 2 -w 2 -c 2"
   handlers ['default']
   subscribers ['cassandra']
   interval 30
 end
 
-monitor_check 'cassandra-metrics' do
-  file '/cassandra/cassandra-metrics.rb'
-  command '--cfstats --filter "history|gameresponses|checkins" --scheme kwarter.:::name:::.cassandra'
+sensu_check 'cassandra-metrics' do
+  #file '/cassandra/cassandra-metrics.rb'
+  command 'cassandra-metrics.rb --cfstats --filter "history|gameresponses|checkins" --scheme kwarter.:::name:::.cassandra'
   type 'metric'
   handlers ['metrics']
   subscribers ['cassandra']
   interval 30
 end
 
-monitor_check 'cassandra-limits' do
-  file '/processes/check-limits.rb'
-  command "-p /var/run/cassandra.pid -f -W 10000 -C 1025"
+sensu_check 'cassandra-limits' do
+  #file '/processes/check-limits.rb'
+  command "check-limits.rb -p /var/run/cassandra.pid -f -W 10000 -C 1025"
   handlers ['default']
   subscribers ['cassandra']
   interval 30
